@@ -10,6 +10,9 @@ public class GameController : MonoBehaviour
     public int turnCounter;
     public Text mainText;
 
+    public Button[] gameButtons;
+    public Button resetButton;
+
     private int floor = 0;
     private int ceiling = 101;
 
@@ -24,6 +27,7 @@ public class GameController : MonoBehaviour
         currentGuess = 50;
         turnCounter = 1;
         mainText.text = $"Is your number {currentGuess}?";
+        resetButton.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -53,6 +57,25 @@ public class GameController : MonoBehaviour
     public void EndGame()
     {
         mainText.text = $"I knew your number was {currentGuess}, it only took {turnCounter} tries!";
+        foreach (Button button in gameButtons)
+        {
+            button.gameObject.SetActive(false);
+        }
+        resetButton.gameObject.SetActive(true);
+    }
+
+    public void Reset()
+    {
+        currentGuess = 50;
+        turnCounter = 1;
+        floor = 0;
+        ceiling = 101;
+        mainText.text = $"Is your number {currentGuess}?";
+        resetButton.gameObject.SetActive(false);
+        foreach (Button button in gameButtons)
+        {
+            button.gameObject.SetActive(true);
+        }
     }
 
     int getHigherGuess()
