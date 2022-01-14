@@ -8,10 +8,10 @@ public class GameController : MonoBehaviour
 
     public int currentGuess;
     public int turnCounter;
-    public TextObject mainText;
+    public Text mainText;
 
-    private const int FLOOR_VALUE = 0;
-    private const int MAX_VALUE = 100;
+    private int floor = 0;
+    private int ceiling = 101;
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +23,7 @@ public class GameController : MonoBehaviour
     {
         currentGuess = 50;
         turnCounter = 1;
+        mainText.text = $"Is your number {currentGuess}?";
     }
 
     // Update is called once per frame
@@ -31,13 +32,36 @@ public class GameController : MonoBehaviour
         
     }
 
+    public void GuessHigher()
+    {
+        turnCounter++;
+        floor = currentGuess;
+        int nextGuess = getHigherGuess();
+        currentGuess = nextGuess;
+        mainText.text = $"Is your number {nextGuess}?";
+    }
+
+    public void GuessLower()
+    {
+        turnCounter++;
+        ceiling = currentGuess;
+        int nextGuess = getLowerGuess();
+        currentGuess = nextGuess;
+        mainText.text = $"Is your number {nextGuess}?";
+    }
+
+    public void EndGame()
+    {
+        mainText.text = $"I knew your number was {currentGuess}, it only took {turnCounter} tries!";
+    }
+
     int getHigherGuess()
     {
-        return (currentGuess + MAX_VALUE) / 2;
+        return (currentGuess + ceiling) / 2;
     }
 
     int getLowerGuess()
     {
-        return (currentGuess + FLOOR_VALUE) / 2;
+        return (currentGuess + floor) / 2;
     }
 }
