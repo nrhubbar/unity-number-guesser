@@ -2,89 +2,82 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
-public class GameController : MonoBehaviour
+using State;
+namespace NumberGuesser
 {
-
-    public int currentGuess;
-    public int turnCounter;
-    public Text mainText;
-
-    public Button[] gameButtons;
-    public Button resetButton;
-
-    private int floor = 0;
-    private int ceiling = 101;
-
-    // Start is called before the first frame update
-    void Start()
+    public class GameController : MonoBehaviour
     {
-        GameSetup();
-    }
 
-    void GameSetup()
-    {
-        currentGuess = 50;
-        turnCounter = 1;
-        mainText.text = $"Is your number {currentGuess}?";
-        resetButton.gameObject.SetActive(false);
-    }
+        private NumberGuesserState state;
+        public Text mainText;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+        public Button[] gameButtons;
+        public Button resetButton;
 
-    public void GuessHigher()
-    {
-        turnCounter++;
-        floor = currentGuess;
-        int nextGuess = getHigherGuess();
-        currentGuess = nextGuess;
-        mainText.text = $"Is your number {nextGuess}?";
-    }
-
-    public void GuessLower()
-    {
-        turnCounter++;
-        ceiling = currentGuess;
-        int nextGuess = getLowerGuess();
-        currentGuess = nextGuess;
-        mainText.text = $"Is your number {nextGuess}?";
-    }
-
-    public void EndGame()
-    {
-        mainText.text = $"I knew your number was {currentGuess}, it only took {turnCounter} tries!";
-        foreach (Button button in gameButtons)
+        // Start is called before the first frame update
+        void Start()
         {
-            button.gameObject.SetActive(false);
+            GameSetup();
         }
-        resetButton.gameObject.SetActive(true);
-    }
 
-    public void Reset()
-    {
-        currentGuess = 50;
-        turnCounter = 1;
-        floor = 0;
-        ceiling = 101;
-        mainText.text = $"Is your number {currentGuess}?";
-        resetButton.gameObject.SetActive(false);
-        foreach (Button button in gameButtons)
+        void GameSetup()
         {
-            button.gameObject.SetActive(true);
+            state = new NumberGuesserState();
+            mainText.text = $"Is your number {state.GetCurrentGuess()}?";
+            resetButton.gameObject.SetActive(false);
         }
-    }
 
-    int getHigherGuess()
-    {
-        return (currentGuess + ceiling) / 2;
-    }
+        // Update is called once per frame
+        void Update()
+        {
+            if (Input.GetKey("escape"))
+            {
+                Application.Quit();
+            }
+        }
 
-    int getLowerGuess()
-    {
-        return (currentGuess + floor) / 2;
+        public void GuessHigher()
+        {
+            state = new NumberGuesserState(getNextGuess(state.GetCurrentGuess(), state.GetCeiling()), state.GetTurnCounter() + 1, state.GetCurrentGuess(), state.GetCeiling());
+
+            mainText.text = $"Is your number {state.GetCurrentGuess()}?";
+        }
+
+        public void GuessLower()
+        {
+            state = new NumberGuesserState(getNextGuess(state.GetCurrentGuess(), state.GetFloor()), state.GetTurnCounter() + 1, state.GetFloor(), state.GetFloor());
+            mainText.text = $"Is your number {state.GetCurrentGuess()}?";
+        }
+
+        public void EndGame()
+        {
+            mainText.text = $"I knew your number was {state.GetCurrentGuess()}, it only took {state.GetTurnCounter()} tries!";
+            foreach (Button button in gameButtons)
+            {
+                button.gameObject.SetActive(false);
+            }
+            resetButton.gameObject.SetActive(true);
+        }
+
+        public void Reset()
+        {
+            state = new NumberGuesserState();
+            mainText.text = $"Is your number {state.GetCurrentGuess()}?";
+            resetButton.gameObject.SetActive(false);
+            foreach (Button button in gameButtons)
+            {
+                button.gameObject.SetActive(true);
+            }
+        }
+
+        public void Exit()
+        {
+            Application.Quit();
+        }
+
+        int getNextGuess(int currentGuess, int guessModifier)
+        {
+            return (currentGuess + guessModifier) / 2;
+        }
     }
 }
