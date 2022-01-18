@@ -23,7 +23,7 @@ namespace NumberGuesser
         void GameSetup()
         {
             state = new NumberGuesserState();
-            mainText.text = $"Is your number {state.GetCurrentGuess()}?";
+            mainText.text = $"Is your number {state.CurrentGuess}?";
             resetButton.gameObject.SetActive(false);
         }
 
@@ -38,20 +38,20 @@ namespace NumberGuesser
 
         public void GuessHigher()
         {
-            state = new NumberGuesserState(getNextGuess(state.GetCurrentGuess(), state.GetCeiling()), state.GetTurnCounter() + 1, state.GetCurrentGuess(), state.GetCeiling());
+            state = new NumberGuesserState(getNextGuess(state.CurrentGuess, state.Ceiling), state.TurnCounter + 1, state.CurrentGuess, state.Ceiling);
 
-            mainText.text = $"Is your number {state.GetCurrentGuess()}?";
+            mainText.text = $"Is your number {state.CurrentGuess}?";
         }
 
         public void GuessLower()
         {
-            state = new NumberGuesserState(getNextGuess(state.GetCurrentGuess(), state.GetFloor()), state.GetTurnCounter() + 1, state.GetFloor(), state.GetFloor());
-            mainText.text = $"Is your number {state.GetCurrentGuess()}?";
+            state = new NumberGuesserState(getNextGuess(state.CurrentGuess, state.Floor), state.TurnCounter + 1, state.Floor, state.CurrentGuess);
+            mainText.text = $"Is your number {state.CurrentGuess}?";
         }
 
         public void EndGame()
         {
-            mainText.text = $"I knew your number was {state.GetCurrentGuess()}, it only took {state.GetTurnCounter()} tries!";
+            mainText.text = $"I knew your number was {state.CurrentGuess}, it only took {state.TurnCounter} tries!";
             foreach (Button button in gameButtons)
             {
                 button.gameObject.SetActive(false);
@@ -62,7 +62,7 @@ namespace NumberGuesser
         public void Reset()
         {
             state = new NumberGuesserState();
-            mainText.text = $"Is your number {state.GetCurrentGuess()}?";
+            mainText.text = $"Is your number {state.CurrentGuess}?";
             resetButton.gameObject.SetActive(false);
             foreach (Button button in gameButtons)
             {
